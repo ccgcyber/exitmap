@@ -10,25 +10,25 @@ Exitmap is a fast and modular Python-based scanner for
 [Tor](https://www.torproject.org) exit relays.  Exitmap modules implement tasks
 that are run over (a subset of) all exit relays.  If you have a background in
 functional programming, think of exitmap as a `map()` interface for Tor exit
-relays.  Modules can perform any TCP-based networking task; fetching a web page,
-uploading a file, connecting to an SSH server, or joining an IRC channel.
+relays: Modules can perform any TCP-based networking task like fetching a web
+page, uploading a file, connecting to an SSH server, or joining an IRC channel.
 
 In practice, exitmap is useful to monitor the reliability and trustworthiness of
-exit relays.  Mainly, we use exitmap to check for false negatives on the Tor
-Project's [check](https://check.torproject.org) service and to find [malicious
-exit relays](http://www.cs.kau.se/philwint/spoiled_onions).  It is easy to
-develop new modules for exitmap; just have a look at the file HACKING in the
-doc/ directory, or check out one of the existing modules.
+exit relays.  The Tor Project uses exitmap to check for false negatives on the
+Tor Project's [check](https://check.torproject.org) service and to find
+[malicious exit relays](http://www.cs.kau.se/philwint/spoiled_onions).  It is
+easy to develop new modules for exitmap; just have a look at the file HACKING in
+the doc/ directory or check out one of the existing modules.
 
 Exitmap uses [Stem](https://stem.torproject.org) to create circuits to all given
-exit relays, and as soon as tor notifies exitmap of an established circuit, a
-module is invoked for the newly established circuit.  Modules can be pure Python
+exit relays.  Each time tor notifies exitmap of an established circuit, a module
+is invoked for the newly established circuit.  Modules can be pure Python
 scripts or executables.  For executables,
 [torsocks](https://github.com/dgoulet/torsocks/) is necessary.
 
-Finally, note that exitmap is a network measurement tool and not useful to
-ordinary Tor users.  The Tor Project is running the tool on a regular basis, and
-more exitmap scans just cause additional network load.  The only reason exitmap
+Finally, note that exitmap is a network measurement tool and of little use to
+ordinary Tor users.  The Tor Project is already running the tool regularly.
+More exitmap scans just cause unnecessary network load.  The only reason exitmap
 is publicly available is because its source code and design might be of interest
 to some.
 
@@ -54,23 +54,21 @@ The command line output will then show you how Tor bootstraps, the output of the
 checktest module, and a scan summary.  If you don't need three hops and prefer
 to use two hops with a static first hop, run:
 
-    $ ./bin/exitmap --first-hop CCEF02AA454C0AB0FE1AC68304F6D8C4220C1912 checktest
+    $ ./bin/exitmap --first-hop 1234567890ABCDEF1234567890ABCDEF12345678 checktest
 
 To run the same test over German exit relays only, execute:
 
-    $ ./bin/exitmap --country DE --first-hop CCEF02AA454C0AB0FE1AC68304F6D8C4220C1912 checktest
+    $ ./bin/exitmap --country DE --first-hop 1234567890ABCDEF1234567890ABCDEF12345678 checktest
 
 If you want to pause for five seconds in between circuit creations to reduce the
 load on the Tor network and the scanning destination, run:
 
     $ ./bin/exitmap --build-delay 5 checktest
 
-Note that
-[`CCEF02AA454C0AB0FE1AC68304F6D8C4220C1912`](https://atlas.torproject.org/#details/CCEF02AA454C0AB0FE1AC68304F6D8C4220C1912)
-is a relay run by Karlstad University.  Feel free to use it, but try to use your
-own relay to distribute the scanning load.
+Note that `1234567890ABCDEF1234567890ABCDEF12345678` is a pseudo fingerprint
+that you should replace with an exit relay that you control.
 
-To get an overview of exitmap's other options, run:
+To learn more about all of exitmap's options, run:
 
     $ ./bin/exitmap --help
 
@@ -96,7 +94,7 @@ The file accepts all command line options, but you have to replace minuses with
 underscores.  Here is an example:
 
     [Defaults]
-    first_hop = CCEF02AA454C0AB0FE1AC68304F6D8C4220C1912
+    first_hop = 1234567890ABCDEF1234567890ABCDEF12345678
     verbosity = debug
     build_delay = 1
     analysis_dir = /path/to/exitmap_scans
@@ -109,7 +107,7 @@ Don't like exitmap?  Then have a look at
 [SoaT](https://gitweb.torproject.org/torflow.git/tree/NetworkScanners/ExitAuthority/README.ExitScanning),
 [torscanner](https://code.google.com/p/torscanner/),
 [DetecTor](http://detector.io/DetecTor.html), or
-[SelekTOR](http://www.dazzleships.net/selektor-for-linux/).
+[SelekTOR](https://www.dazzleships.net/selektor-for-linux/).
 
 Tests
 -----
